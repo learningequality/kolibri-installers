@@ -443,25 +443,10 @@ begin
     end;  
 end;
 
-{ Used in GetPipPath below }
-const
-    DEFAULT_PIP_PATH = '\Python34\Scripts\pip.exe';
-{ Returns the path of pip.exe on the system. }
-{ Tries several different locations before prompting user. }
-
-function GetDefaultPip() : String;
-begin
-  result := ExpandConstant('{sd}') + DEFAULT_PIP_PATH; 
-end;
-
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
     result := True;
     isWindowsInstall := true;
-    if not (FileExists(GetDefaultPip())) then
-    begin
-      HandlePythonSetup();
-    end;
     if CurPageID = wpSelectTasks then
     begin
         if WizardForm <> nil then 
@@ -486,7 +471,6 @@ begin
             ExtractTemporaryFile('python-3.4.3.amd64.msi');
             ExtractTemporaryFile('python-3.4.3.msi');
             ExtractTemporaryFile('python-exe.bat');
-            ExtractTemporaryFile('pip-6.0.8-py2.py3-none-any.whl');
             ShellExec('open', ExpandConstant('{tmp}')+'\python-exe.bat', '', '', SW_HIDE, ewWaitUntilTerminated, installPythonErrorCode);
         except
             // MsgBox('HandlePythonSetup - ' + GetExceptionMessage, mbInformation, mb_Ok);
@@ -507,6 +491,12 @@ begin
         end
     end;
 end;
+{ Used in GetPipPath below }
+const
+    DEFAULT_PIP_PATH = '\Python34\Scripts\pip.exe';
+{ Returns the path of pip.exe on the system. }
+{ Tries several different locations before prompting user. }
+
 
 function FailedPipNotFound() : String;
 begin
